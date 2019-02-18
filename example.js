@@ -1,3 +1,12 @@
-const { info, debug } = require('./index');
+const { info, debug, error } = require('./index')({
+  token: 'token',
+  api: 'api url'
+});
 
-debug('debug debug debug')
+info('Info')
+
+debug('Debug')
+
+error('Error', {
+  id: 2
+})

@@ -1,59 +1,25 @@
 const axios = require('axios');
 const publicIp = require('public-ip');
 
-const { LOGGER_URL, LOGGER_TOKEN } = process.env;
-
-const sendLog = async ({ level, message, context }) => {
-	const env = await publicIp.v4();
-	const data = {
-		token: LOGGER_TOKEN,
-		env,
-		level,
-		message,
-		context
-	}
-	return axios.post(LOGGER_URL, data)
+const sendLog = async ({ level, message, context, LOGGER_TOKEN, LOGGER_URL }) => {
+  const env = await publicIp.v4();
+  const data = {
+    token: LOGGER_TOKEN,
+    env,
+    level,
+    message,
+    context
+  }
+  return axios.post(LOGGER_URL, data)
 }
 
-const info = (message, context) => {
-	return sendLog({ level: 'INFO', message, context })
-}
-
-const debug = (message, context) => {
-	return sendLog({ level: 'DEBUG', message, context })
-}
-
-const notice = (message, context) => {
-	return sendLog({ level: 'NOTICE', message, context })
-}
-
-const warning = (message, context) => {
-	return sendLog({ level: 'WARNING', message, context })
-}
-
-const error = (message, context) => {
-	return sendLog({ level: 'ERROR', message, context })
-}
-
-const critical = (message, context) => {
-	return sendLog({ level: 'CRITICAL', message, context })
-}
-
-const alert = (message, context) => {
-	return sendLog({ level: 'ALERT', message, context })
-}
-
-const emergency = (message, context) => {
-	return sendLog({ level: 'EMERGENCY', message, context })
-}
-
-module.exports = {
-	info,
-	debug,
-	notice,
-	warning,
-	error,
-	critical,
-	alert,
-	emergency
-}
+module.exports = ({ token: LOGGER_TOKEN, api: LOGGER_URL }) => ({
+  info: (message, context) => sendLog({ level: 'INFO', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  debug: (message, context) => sendLog({ level: 'DEBUG', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  notice: (message, context) => sendLog({ level: 'NOTICE', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  warning: (message, context) => sendLog({ level: 'WARNING', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  error: (message, context) => sendLog({ level: 'ERROR', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  critical: (message, context) => sendLog({ level: 'CRITICAL', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  alert: (message, context) => sendLog({ level: 'ALERT', message, context, LOGGER_TOKEN, LOGGER_URL }),
+  emergency: (message, context) => sendLog({ level: 'EMERGENCY', message, context, LOGGER_TOKEN, LOGGER_URL })
+})
